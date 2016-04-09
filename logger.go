@@ -73,7 +73,7 @@ func Log(serve_http gbeta.ServeHTTPFunc) gbeta.ServeHTTPFunc {
 	return func(res gbeta.Res, req gbeta.Req) {
 		start := time.Now()
 		serve_http(res, req)
-		logger.Printf("  %s  %s | %s | %v from %s ", himagenta(req.Method), green(req.URL.Path), statusColor(res.Code()), timeColor(time.Since(start)), hiwhite(req.RemoteAddr))
+		logger.Printf("  %s  %s  %s  %v", himagenta(req.Method), green(req.URL.Path), statusColor(res.Code()), timeColor(time.Since(start)))
 		return
 	}
 }
