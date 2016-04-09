@@ -67,7 +67,7 @@ var timeColor = func(d time.Duration) string {
 	}
 }
 
-var logger = log.New(os.Stdout, green("[Gebeta]"), log.Ldate|log.Ltime)
+var logger = log.New(os.Stdout, green("[Gbeta]")+" ", log.Ldate|log.Ltime)
 
 func Log(serve_http gbeta.ServeHTTPFunc) gbeta.ServeHTTPFunc {
 	return func(res gbeta.Res, req gbeta.Req) {
