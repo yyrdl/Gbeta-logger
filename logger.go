@@ -8,23 +8,25 @@ import (
 	"net/http"
 	"os"
 	"time"
+
 	"github.com/fatih/color"
 	"github.com/yyrdl/gbeta"
 )
+
 // prepare color printFunc to use
 var (
-	green     = color.New(color.FgGreen).PrintfFunc()
-	yellow    = color.New(color.FgYellow).PrintfFunc()
-	red       = color.New(color.FgRed).PrintfFunc()
-	blue      = color.New(color.FgBlue).PrintfFunc()
-	cyan      = color.New(color.FgCyan).PrintfFunc()
-	hiwhite   = color.New(color.Fg.HiWhite).PrintfFunc()
-	himagenta = color.New(color.Fg.HiMagenta).PrintfFunc()
+	green     = color.New(color.FgGreen).SprintFunc()
+	yellow    = color.New(color.FgYellow).SprintFunc()
+	red       = color.New(color.FgRed).SprintFunc()
+	blue      = color.New(color.FgBlue).SprintFunc()
+	cyan      = color.New(color.FgCyan).SprintFunc()
+	hiwhite   = color.New(color.FgHiWhite).SprintFunc()
+	himagenta = color.New(color.FgHiMagenta).SprintFunc()
 )
 
 var statusColor = func(status int) string {
 	status_msg := fmt.Sprintf("%d %s", status, http.StatusText(status))
-	switch status {
+	switch {
 	case status < 200:
 		{
 			return blue(status_msg)
@@ -35,7 +37,7 @@ var statusColor = func(status int) string {
 		}
 	case status < 400:
 		{
-			return cyan(tatus_msg)
+			return cyan(status_msg)
 		}
 	case status < 500:
 		{
@@ -49,7 +51,7 @@ var statusColor = func(status int) string {
 }
 
 var timeColor = func(d time.Duration) string {
-	switch d {
+	switch {
 	case d < 500*time.Millisecond:
 		{
 			return green(d)
@@ -65,13 +67,13 @@ var timeColor = func(d time.Duration) string {
 	}
 }
 
-logger:=log.New(os.Stdout,green("[Gebeta]"),log.Ldate|log.Ltime)
+var logger = log.New(os.Stdout, green("[Gebeta]"), log.Ldate|log.Ltime)
 
-func Log(serve_http gebeta.ServeHTTPFunc) gebeta.ServeHTTPFunc {
-	return func(res gebeta.Res, req gebeta.Req) {
-		start := time.Now().Unix()
+func Log(serve_http gbeta.ServeHTTPFunc) gbeta.ServeHTTPFunc {
+	return func(res gbeta.Res, req gbeta.Req) {
+		start := time.Now()
 		serve_http(res, req)
-		logger.Printf("  %s  %s | %s | %v from %s ",himagenta(req.Method),green(req.URL.Path),statusColor(res.Code()),timeColor(time.Since(start)),hiwhite(req.RemoteAddr))
-		return 
+		logger.Printf("  %s  %s | %s | %v from %s ", himagenta(req.Method), green(req.URL.Path), statusColor(res.Code()), timeColor(time.Since(start)), hiwhite(req.RemoteAddr))
+		return
 	}
 }
